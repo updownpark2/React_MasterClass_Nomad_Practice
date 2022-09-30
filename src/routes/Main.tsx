@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
+import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { Coinfetch } from "../api";
 
 const BigDiv = styled.div`
   width: 100vw;
@@ -27,11 +29,10 @@ interface CoinTypes {
 }
 
 export default function Main() {
-  const [coin, setCoin] = useState<CoinTypes[]>([]);
+  const { isLoading, data } = useQuery<CoinTypes[]>("Maindata", Coinfetch);
+
+  /*const [coin, setCoin] = useState<CoinTypes[]>([]);
   const [loading, setLoading] = useState(true);
-
-  //API를 먼저 불러오자
-
   useEffect(() => {
     const CallApi = async () => {
       const res = await fetch("https://api.coinpaprika.com/v1/coins");
@@ -41,14 +42,14 @@ export default function Main() {
       setLoading((current) => !current);
     };
     CallApi(); //API를 호출했으니 이제 State에 저장된 데이터를 이용하여 화면에 그려준다.
-  }, []);
+  }, []);*/
   return (
     <BigDiv>
-      {loading ? (
+      {isLoading ? (
         <h1>로딩중🐸</h1>
       ) : (
         <CoinList>
-          {coin.map((item) => (
+          {data?.splice(0, 20).map((item) => (
             <Coin key={item.id}>
               <Link
                 to={{
