@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { Coinfetch } from "../api";
+import { CoinApi } from "../api";
 
-const BigDiv = styled.div`
+const Box = styled.div`
+  margin-top: 20px;
   width: 100vw;
   height: 100vh;
   display: flex;
@@ -15,7 +15,12 @@ const BigDiv = styled.div`
 const CoinList = styled.ul``;
 
 const Coin = styled.li`
+  text-align: center;
   margin-top: 20px;
+  padding: 10px 30px;
+  background-color: ${(props) => props.theme.textColor};
+  color: ${(props) => props.theme.accentColor};
+  border-radius: 20px;
 `;
 
 interface CoinTypes {
@@ -28,41 +33,27 @@ interface CoinTypes {
   type: string;
 }
 
+//데이터를 fetch해와야함
 export default function Main() {
-  const { isLoading, data } = useQuery<CoinTypes[]>("Maindata", Coinfetch);
+  const { isLoading, data } = useQuery<CoinTypes[]>("coinAPI", CoinApi);
 
-  /*const [coin, setCoin] = useState<CoinTypes[]>([]);
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    const CallApi = async () => {
-      const res = await fetch("https://api.coinpaprika.com/v1/coins");
-      const json = await res.json();
-      //불러왔다. 그럼 이제 state에 저장해보자
-      setCoin(json.splice(0, 10)); //Coin state에 받아온 데이터 배열을 집어 넣어준다.
-      setLoading((current) => !current);
-    };
-    CallApi(); //API를 호출했으니 이제 State에 저장된 데이터를 이용하여 화면에 그려준다.
-  }, []);*/
   return (
-    <BigDiv>
+    <Box>
       {isLoading ? (
-        <h1>로딩중🐸</h1>
+        <h3>로딩중~</h3>
       ) : (
         <CoinList>
-          {data?.splice(0, 20).map((item) => (
+          {data?.splice(0, 30).map((item, index) => (
             <Coin key={item.id}>
               <Link
-                to={{
-                  pathname: `/${item.id}`,
-                  state: { name: item.name, symbol: item.symbol },
-                }}
+                to={{ pathname: `/${item.id}`, state: { name: item.name } }}
               >
-                {item.id}
+                {item.name}
               </Link>
             </Coin>
           ))}
         </CoinList>
       )}
-    </BigDiv>
+    </Box>
   );
 }

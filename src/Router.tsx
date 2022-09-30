@@ -6,7 +6,7 @@ export default function Router() {
   return (
     <BrowserRouter>
       <Switch>
-        <Route path="/:coinid">
+        <Route path="/:Mainid">
           <Detail />
         </Route>
         <Route path="/">

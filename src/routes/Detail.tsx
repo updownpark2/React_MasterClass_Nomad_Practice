@@ -1,29 +1,50 @@
-import { info } from "console";
-import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import {
+  Link,
   Route,
   Switch,
   useLocation,
   useParams,
   useRouteMatch,
 } from "react-router-dom";
-import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { Coininfo, Coinprice } from "../api";
-import Test1 from "./Test1";
-import Test2 from "./Test2";
+import { CoinInfo, CoinPrice } from "../api";
+import Minus from "./Minus";
+import Plus from "./Plus";
 
+//이제 또 다른 API를 불러와야함
+
+const Box = styled.div`
+  margin-top: 20px;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+`;
+const H1 = styled.h1`
+  color: ${(props) => props.theme.accentColor};
+  font-size: 48px;
+`;
+const Loader = styled.h2`
+  text-align: center;
+  color: purple;
+  font-size: 36px;
+`;
+const Infobox = styled.div`
+  width: 100px;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: ${(props) => props.theme.accentColor};
+  color: ${(props) => props.theme.textColor};
+  border-radius: 40px;
+`;
 interface ITag {
   id: string;
   name: string;
   coin_counter: number;
   ico_counter: number;
-}
-
-interface Statetypes {
-  name: string;
-  symbol: string;
 }
 interface infoData {
   id: string;
@@ -84,81 +105,49 @@ interface priceData {
     };
   };
 }
-//https://api.coinpaprika.com/v1/coins/btc-bitcoin
-//https://api.coinpaprika.com/v1/tickers/btc-bitcoin
+
 export default function Detail() {
-  const { coinid } = useParams<{ coinid: string }>();
-  const { state } = useLocation<Statetypes>();
+  const { Mainid } = useParams<{ Mainid: string }>();
+  const { state } = useLocation<{ name: string }>();
 
-  //`https://api.coinpaprika.com/v1/coins/${coinid}`
-  //`https://api.coinpaprika.com/v1/tickers/${coinid}`
-
-  const { isLoading: Info, data: Infodata } = useQuery<infoData>(
-    [coinid, "Info"],
-    () => Coininfo(coinid)
+  const { isLoading: Infodloading, data: Info } = useQuery<infoData>(
+    [Mainid, "info"],
+    () => CoinInfo(Mainid)
   );
-  const { isLoading: Price, data: Pricedata } = useQuery<priceData>(
-    [coinid, "Price"],
-    () => Coinprice(coinid)
+  const { isLoading: Priceloading, data: Price } = useQuery<priceData>(
+    [Mainid, "price"],
+    () => CoinPrice(Mainid)
   );
 
-  //여기서 이제 URL변수를 받아들여야한다. 일단 Detail의 주소는 변수명으로 확정이 되었기 때문에 그 변수명을 받아줘야한다.
+  const priceMatch = useRouteMatch("/:Mainid/price"); //여기 URL에 있는지! 있으면 object를 받음
+  const chartMatch = useRouteMatch("/:Mainid/chart");
 
-  const BigDiv = styled.div`
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  `;
-
-  const What = useLocation();
-
-  const What2 = useRouteMatch();
-
-  const isLoading = Info || Price;
+  const Loading = Infodloading || Priceloading;
 
   return (
-    <BigDiv>
-      {isLoading ? (
-        <h2 style={{ textAlign: "center" }}>로딩중</h2>
+    <Box>
+      <H1>{Mainid}</H1>
+      {Loading ? (
+        <Loader>로딩🌸</Loader>
       ) : (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <h2>{Infodata?.id}</h2>
-          <h3>{Pricedata?.quotes.USD.ath_price} 달러!</h3>
-          <Link
-            to={{
-              pathname: `/${coinid}/Test1`,
-              state: { rank: Pricedata?.rank },
-            }}
-          >
-            Test1으로!
-          </Link>
-          <Link
-            to={{
-              pathname: `/${coinid}/Test2`,
-              state: { rank: Pricedata?.rank },
-            }}
-          >
-            Test2로!
-          </Link>
+        <div>
+          <h2>{Info?.id}</h2>
 
-          <Switch>
-            <Route path={`/${coinid}/Test1`}>
-              <Test1 />
-            </Route>
-            <Route path={`/${coinid}/Test2`}>
-              <Test2 />
-            </Route>
-          </Switch>
+          <h3>{Price?.quotes.USD.price}</h3>
         </div>
       )}
-    </BigDiv>
+
+      <Link to={`/${Mainid}/Plus`}>더하기</Link>
+      <Link to={`/${Mainid}/Minus`}>빼기</Link>
+
+      <Switch>
+        <Route exact path={`/${Mainid}/Plus`}>
+          <Plus />
+        </Route>
+        <Route exact path={`/${Mainid}/Minus`}>
+          <Minus />
+        </Route>
+      </Switch>
+    </Box>
   );
 }
