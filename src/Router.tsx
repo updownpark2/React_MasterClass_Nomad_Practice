@@ -1,16 +1,15 @@
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Detail from "./routes/Detail";
-import Main from "./routes/Main";
-
+import Home from "./routes/Home";
 export default function Router() {
   return (
     <BrowserRouter>
       <Switch>
-        <Route path="/:Mainid">
+        <Route exact path="/:CoinId">
           <Detail />
         </Route>
-        <Route path="/">
-          <Main />
+        <Route exact path="/">
+          <Home />
         </Route>
       </Switch>
     </BrowserRouter>
