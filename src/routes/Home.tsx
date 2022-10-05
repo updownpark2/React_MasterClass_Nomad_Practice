@@ -2,21 +2,57 @@ import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { CoinApi } from "../api";
-const Box = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100vw;
-  height: 100vh;
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { ThemeChange } from "../atoms";
+const Container = styled.div`
+  padding: 0px 20px;
+  max-width: 480px;
+  margin: 0 auto;
 `;
 
-const CoinList = styled.ul``;
+const Header = styled.header`
+  height: 10vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 50px;
+`;
+
+const CoinList = styled.ul`
+  margin-top: 30px;
+`;
 
 const Coin = styled.li`
-  padding: 10px 20px;
-  margin-top: 20px;
   background-color: ${(props) => props.theme.accentColor};
-  border-radius: 4px;
+  color: ${(props) => props.theme.textColor};
+  margin-bottom: 10px;
+  padding: 20px;
+  border-radius: 15px;
+  a {
+    transition: color 0.2s ease-in;
+    display: flex;
+    align-items: center;
+  }
+  &:hover {
+    a {
+      color: ${(props) => props.theme.accentColor};
+    }
+  }
+`;
+
+const Title = styled.h1`
+  font-size: 48px;
+  color: ${(props) => props.theme.accentColor};
+`;
+
+const Loader = styled.span`
+  text-align: center;
+`;
+
+const IMG = styled.img`
+  width: 25px;
+  height: 25px;
+  margin-right: 10px;
 `;
 
 interface CoinTypes {
@@ -30,24 +66,37 @@ interface CoinTypes {
 }
 
 export default function Home() {
-  const { isLoading, data } = useQuery<CoinTypes[]>("Coins", CoinApi);
+  const { isLoading, data } = useQuery<CoinTypes[]>("CoinApi", CoinApi); //useQuery는 isLoading 과 data를 반환
+  const ChangeTheme = useSetRecoilState(ThemeChange);
 
   return (
-    <Box>
+    <Container>
+      <button
+        onClick={() => {
+          ChangeTheme((current) => !current);
+        }}
+      >
+        변화시키기
+      </button>
       {isLoading ? (
-        "로딩중!"
+        <Header>loading...</Header>
       ) : (
         <CoinList>
-          {data?.splice(0, 10).map((item) => (
+          {data?.slice(0, 20).map((item) => (
             <Coin key={item.id}>
-              <Link to={{ pathname: `/${item.id}`, state: { id: item.id } }}>
+              <Link
+                to={{ pathname: `/${item.id}`, state: { name: item.name } }}
+              >
+                <IMG
+                  src={`https://coinicons-api.vercel.app/api/icon/${item.symbol.toLowerCase()}`}
+                />
                 {item.name}
               </Link>
             </Coin>
           ))}
         </CoinList>
       )}
-    </Box>
+    </Container>
   );
 }
 
