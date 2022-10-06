@@ -1,13 +1,12 @@
 import React, { useState } from "react";
-import Router from "./Router";
 import styled, {
   createGlobalStyle,
   keyframes,
   ThemeProvider,
 } from "styled-components";
-import { darkmode, lightmode } from "./theme";
+import { darkmode } from "./theme";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { ThemeChange } from "./atoms";
+import Todolist from "./Todolist";
 const GlobalStyle = createGlobalStyle`
 @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400&display=swap');
 font-family: 'Source Sans Pro', sans-serif;
@@ -73,13 +72,11 @@ a{
 `;
 
 function App() {
-  const [state, setState] = useState(false); //원래는 여기서 부터 전달을해주어여한다 그런데 이젠 그럴필요없이 Recoil을 사용하면된다.
-  const Theme = useRecoilValue(ThemeChange);
   return (
     <>
-      <ThemeProvider theme={Theme ? lightmode : darkmode}>
+      <ThemeProvider theme={darkmode}>
         <GlobalStyle />
-        <Router />
+        <Todolist />
       </ThemeProvider>
     </>
   );
