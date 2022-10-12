@@ -1,6 +1,36 @@
 import React, { useState } from "react";
+import { useForm } from "react-hook-form";
 
 export default function Todolist() {
+  const { register, watch, handleSubmit, formState } = useForm();
+
+  const Complete = () => {
+    console.log("통과!"); //통과했을 때 이런 함수를 사용한다
+    //이게 핸들서브밋!
+  };
+  console.log(formState.errors);
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column" }}>
+      <form onSubmit={handleSubmit(Complete)}>
+        <input {...register("name", { required: true })} placeholder="이름" />
+        <input {...register("age", { required: true })} placeholder="나이" />
+        <input
+          {...register("email", { required: true })}
+          placeholder="이메일"
+        />
+        <input {...register("ID", { required: true })} placeholder="ID" />
+        <input
+          {...register("PW", { required: "필수" })}
+          placeholder="Password"
+        />
+        <button>제출</button>
+      </form>
+    </div>
+  );
+}
+
+/*export default function Todolist() {
   const [todo, setTodo] = useState<string>("");
   const [todoarr, setTodoarr] = useState<string[]>([]);
   const onChange = (event: React.FormEvent<HTMLInputElement>) => {
@@ -39,7 +69,7 @@ export default function Todolist() {
     </div>
   );
 }
-
+*/
 /*export default function Todolist() {
   const [data, setData] = useState("");
   const [todo, setTodo] = useState<Todo[]>([]);
