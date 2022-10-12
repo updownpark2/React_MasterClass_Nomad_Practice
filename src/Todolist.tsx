@@ -1,30 +1,63 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+interface SPANTYPE {
+  id: string;
+  password: string;
+  email: string;
+  name: string;
+  age: number;
+}
 
 export default function Todolist() {
-  const { register, watch, handleSubmit, formState } = useForm();
-
-  const Complete = () => {
-    console.log("통과!"); //통과했을 때 이런 함수를 사용한다
-    //이게 핸들서브밋!
+  const {
+    register,
+    watch,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SPANTYPE>();
+  const [ok, setOk] = useState(true);
+  console.log(watch()); //변경되는 register를 추적해준다.
+  const OK = () => {
+    setOk(true);
   };
-  console.log(formState.errors);
+  const NO = () => {
+    setOk((curret) => !curret);
+  };
 
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
-      <form onSubmit={handleSubmit(Complete)}>
-        <input {...register("name", { required: true })} placeholder="이름" />
-        <input {...register("age", { required: true })} placeholder="나이" />
+      <form onSubmit={handleSubmit(OK)}>
         <input
-          {...register("email", { required: true })}
-          placeholder="이메일"
+          {...register("id", { required: "ID는 필수입니다" })}
+          placeholder="id"
         />
-        <input {...register("ID", { required: true })} placeholder="ID" />
+        <span>{errors.id?.message}</span>
         <input
-          {...register("PW", { required: "필수" })}
-          placeholder="Password"
+          {...register("password", { required: "password는 필수입니다." })}
+          placeholder="password"
         />
-        <button>제출</button>
+        <span>{errors.password?.message}</span>
+        <input
+          {...register("email", {
+            pattern: {
+              value: /^[A-Za-z0-9._%+-]+@naver.com$/,
+              message: "only naver.com",
+            },
+          })}
+          placeholder="email"
+        />
+        <span>{errors.email?.message}</span>
+        <input
+          {...register("name", { required: "name은 필수입니다" })}
+          placeholder="name"
+        />
+        <span>{errors.name?.message}</span>
+        <input
+          {...register("age", { required: "age는 필수입니다" })}
+          placeholder="age"
+        />
+        <span>{errors.age?.message}</span>
+        <button>추가</button>
       </form>
     </div>
   );
