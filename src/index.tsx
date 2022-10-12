@@ -5,6 +5,7 @@ import { ThemeProvider } from "styled-components";
 import { darkmode } from "./theme";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { RecoilRoot } from "recoil";
+
 const queryClient = new QueryClient();
 
 const root = ReactDOM.createRoot(
@@ -13,7 +14,9 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <RecoilRoot>
-    <App />
+    <QueryClientProvider client={queryClient}>
+      <App />
+    </QueryClientProvider>
   </RecoilRoot>
 );
 
