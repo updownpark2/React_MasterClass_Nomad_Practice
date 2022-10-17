@@ -13,11 +13,9 @@ const root = ReactDOM.createRoot(
 );
 
 root.render(
-  <RecoilRoot>
-    <QueryClientProvider client={queryClient}>
-      <App />
-    </QueryClientProvider>
-  </RecoilRoot>
+  <QueryClientProvider client={queryClient}>
+    <App />
+  </QueryClientProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function

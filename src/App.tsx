@@ -5,7 +5,6 @@ import styled, {
   ThemeProvider,
 } from "styled-components";
 import { darkmode } from "./theme";
-import { useRecoilValue, useSetRecoilState } from "recoil";
 import Todolist from "./Todolist";
 import Router from "./Router";
 const GlobalStyle = createGlobalStyle`
@@ -77,7 +76,7 @@ function App() {
     <>
       <ThemeProvider theme={darkmode}>
         <GlobalStyle />
-        <Todolist />
+        <Router />
       </ThemeProvider>
     </>
   );

@@ -1,14 +1,14 @@
 import { useQuery } from "react-query";
 import { useLocation, useParams } from "react-router-dom";
-import { fetchCoinInfo, fetchCoinPrice } from "../api";
+import styled from "styled-components";
+import { CAll2 } from "../apis";
 
-interface STATE {
-  symbol: string;
-  rank: number;
-}
-interface CoinID {
-  CoinId: string;
-}
+const Box = styled.div``;
+const Title = styled.h3`
+  font-size: 48px;
+  color: yellow;
+`;
+
 interface ITag {
   id: string;
   name: string;
@@ -42,6 +42,7 @@ interface infoData {
   first_data_at: string;
   last_data_at: string;
 }
+
 interface priceData {
   id: string;
   name: string;
@@ -74,34 +75,19 @@ interface priceData {
     };
   };
 }
+const Load = styled.h3`
+  font-size: 48px;
+  color: red;
+`;
 export default function Detail() {
-  const { CoinId } = useParams<CoinID>();
-  const { state } = useLocation<STATE>();
-  const { isLoading: infoloading, data: infodata } = useQuery<infoData>(
-    ["Info", CoinId],
-    () => fetchCoinInfo(CoinId)
-  );
-  const { isLoading: priceloading, data: pricedata } = useQuery<priceData>(
-    ["price", CoinId],
-    () => fetchCoinPrice(CoinId)
-  );
-  const Load = infoloading && priceloading;
+  const { COIN } = useParams<{ COIN: string }>();
+
+  const { isLoading, data } = useQuery<infoData>("info", () => CAll2(COIN));
+  console.log(isLoading);
   return (
-    <div>
-      <h1>{CoinId}</h1>
-      <h2>순위 : {state.rank}</h2>
-      {Load ? (
-        <h3>로딩중^^</h3>
-      ) : (
-        <div>
-          <div>
-            <span>{infodata?.description}</span>
-          </div>
-          <div>
-            <span>{pricedata?.quotes.USD.price}</span>
-          </div>
-        </div>
-      )}
-    </div>
+    <Box>
+      <Title>{COIN}</Title>
+      {isLoading ? <h1> 로딩중</h1> : <h3>{data?.description}</h3>}
+    </Box>
   );
 }
